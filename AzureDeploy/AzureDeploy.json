@@ -158,9 +158,7 @@
             "properties": {  
                 "UseMockServices": false, 
                 "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",
-                "Data:AzureStorageDemos:ConnectionString": "[parameters('policyStorageConnectionString')]",
-                "Data:AzureStorageDemos:ConnectionString2": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
-
+                "Data:AzureStorageDemos:ConnectionString": "[parameters('policyStorageConnectionString')]"
             }
         },
         {
