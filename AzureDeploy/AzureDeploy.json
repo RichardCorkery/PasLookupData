@@ -158,7 +158,8 @@
             "properties": {  
                 "UseMockServices": false, 
                 "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",
-                "Data:AzureStorageDemos:ConnectionString": "[parameters('policyStorageConnectionString')]"
+                "Data:AzureStorageDemos:ConnectionString": "[parameters('policyStorageConnectionString')]",
+                "Data:AzureStorageDemos:ConnectionString2": "[parameters('storageAccountName')]"
             }
         },
         {
