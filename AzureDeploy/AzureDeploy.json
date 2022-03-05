@@ -56,6 +56,10 @@
             "defaultValue": "",    
             "type": "String"
         }, 
+         "storageAccountResourceGroupName":{
+            "defaultValue": "PasStorage-rg-systest", 
+            "type":"String"
+        },
          "storageAccountName":{
             "defaultValue": "", 
             "type":"String"
@@ -157,9 +161,8 @@
             ],
             "properties": {  
                 "UseMockServices": false, 
-                "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",
-                "Data:AzureStorageDemos:ConnectionString": "[parameters('policyStorageConnectionString')]",
-                "Data:AzureStorageDemos:ConnectionString2": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
+                "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",              
+                "Data:AzureStorageDemos:ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(parameters('storageAccountResourceGroupName'),'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
             }
         },
         {
