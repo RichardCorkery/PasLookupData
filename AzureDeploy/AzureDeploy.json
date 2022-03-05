@@ -51,16 +51,12 @@
         "corsWithOriginsUrl": {       
             "defaultValue": "",    
             "type": "String"
-        },
-         "policyStorageConnectionString": {       
-            "defaultValue": "",    
-            "type": "String"
-        }, 
-         "storageAccountResourceGroupName":{
-            "defaultValue": "PasStorage-rg-systest", 
+        },         
+         "storageAccountName":{
+            "defaultValue": "", 
             "type":"String"
         },
-         "storageAccountName":{
+         "storageAccountResourceGroupName":{
             "defaultValue": "", 
             "type":"String"
         }
