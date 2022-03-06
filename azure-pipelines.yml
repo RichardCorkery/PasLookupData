@@ -1,0 +1,104 @@
+#trigger:
+#- main
+
+stages:
+  - stage: 'Build'
+    displayName: 'Build'
+    jobs:
+    - job: 'Build'
+      displayName: 'Build job'
+      pool:
+        vmImage: windows-latest
+  
+      variables:
+        BuildConfiguration: 'Release'
+        RestoreBuildProjects: '**/*.csproj'
+
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET Core sdk 6.0.x'
+        inputs:
+          version: 6.0.x
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '$(RestoreBuildProjects)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: '$(RestoreBuildProjects)'
+          arguments: '--configuration $(BuildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: '**/PasLookupData.Api.csproj'
+          arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+
+      - task: CopyFiles@2
+        displayName: 'Copy Files to: $(build.artifactstagingdirectory)\AzureDeploy'
+        inputs:
+          SourceFolder: AzureDeploy
+          TargetFolder: '$(build.artifactstagingdirectory)\AzureDeploy'
+
+      - publish: '$(build.artifactstagingdirectory)'
+        displayName: 'Publish pipeline artifacts'
+        artifact: drop
+
+  - stage: 'SysTest'
+    displayName: 'Deploy to SysTest'
+    dependsOn: Build
+    jobs:
+    - deployment: Deploy
+      pool:
+        vmImage: windows-latest
+      environment: SysTest
+      variables: 
+          appName: 'PasLookupDataApi'
+          environment: 'systest'
+          resourceGroupName: '$(appName)-rg-$(environment)'
+          appServiceName: '$(appName)-svc-$(environment)'
+          appInsightsName: '$(appName)-ins-$(environment)'
+          appServicePlanName: '$(appName)-asp-$(environment)'
+          location: 'East US'
+          owner: 'RichardCorkery.com'
+          siteName: '$(appName)-svc-$(environment)'
+          skuName: 'B1'
+          corsWithOriginsUrl: 'https://localhost:44329,https://localhost:5001'
+          storageAccountName: 'passtoragest' 
+          storageAccountResourceGroupName: 'PasStorage-rg-systest'          
+          
+      strategy:
+        runOnce:
+          deploy:
+            steps:         
+            # Replace the download task with the shortcut version.  See link below. Couldn't set up initially
+            # https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Download pipeline artifacts'
+              inputs:
+                buildType: current
+                artifact: drop
+                
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: 'ARM Template deployment: Resource Group scope'
+              inputs:
+                azureResourceManagerConnection: 'Pay-As-You-Go ($(subscriptionId))'
+                subscriptionId: '$(subscriptionId)'
+                resourceGroupName: '$(resourceGroupName)'
+                location: '$(location)'
+                csmFile: '$(Pipeline.Workspace)/AzureDeploy/AzureDeploy.json'
+                overrideParameters: '-appServiceName "$(appServiceName)" -appInsightsName "$(appInsightsName)" -appServicePlanName "$(appServicePlanName)" -owner "$(owner)" -environment "$(environment)" -location "$(location)" -skuName "$(skuName)" -siteName "$(siteName)" -corsWithOriginsUrl "$(corsWithOriginsUrl)" -storageAccountName "$(storageAccountName)" -storageAccountResourceGroupName "$(storageAccountResourceGroupName)"'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: 'Azure App Service Deploy: $(appServiceName)'
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go ($(subscriptionId))'
+                appType: 'webApp'
+                WebAppName: '$(appServiceName)'
+                packageForLinux: '$(Pipeline.Workspace)/*.zip'
