@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PasLookupData.Api.Controllers
 {
@@ -6,11 +7,27 @@ namespace PasLookupData.Api.Controllers
     [ApiController]
     public class AboutController : ControllerBase
     {
-        // GET: api/<AboutController>
+        // GET: api/about>
         [HttpGet]
-        public string Get()
+        public ContentResult Get()
         {
-            return "About Controller";
+            var appName = Assembly.GetExecutingAssembly().GetName().Name;
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            //$$$RAC: Revisit the versions
+            var buildVersion = $"{ version.Major:0000}.{ version.Minor:00}.{ version.Build:00}.{ version.Revision:00}";
+
+            var message = $@"App Name: {appName}<br/><br/>
+                             Build: {buildVersion}<br/><br/>
+                             Owner: PasLookupData.Api Developers<br/><br/>
+                             <a href=""/swagger"">Swagger API Documentation</a>";
+
+            var contentResult = new ContentResult()
+            {
+                Content = message,
+                StatusCode = StatusCodes.Status200OK,
+                ContentType = "text/html"
+            };
+            return contentResult;
         }
     }
 }
