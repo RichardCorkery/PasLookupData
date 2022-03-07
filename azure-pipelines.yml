@@ -67,7 +67,7 @@ stages:
           location: 'East US'
           owner: 'RichardCorkery.com'
           siteName: '$(appName)-svc-$(environment)'
-          skuName: 'B1'
+          skuName: 'F1'
           corsWithOriginsUrl: 'https://localhost:44329,https://localhost:5001'
           storageAccountName: 'passtoragest' 
           storageAccountResourceGroupName: 'PasStorage-rg-systest'          
