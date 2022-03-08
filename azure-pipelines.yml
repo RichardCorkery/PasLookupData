@@ -1,6 +1,8 @@
 #trigger:
 #- main
 
+name: $(Year:yyyy).$(Date:MM).$(Date:dd)$(Rev:.rr)
+
 stages:
   - stage: 'Build'
     displayName: 'Build'
