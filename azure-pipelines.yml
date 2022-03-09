@@ -39,7 +39,7 @@ stages:
           command: publish
           publishWebProjects: false
           projects: '**/PasLookupData.Api.csproj'
-          arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+          arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /property:Version=$(Build.BuildNumber)'
 
       - task: CopyFiles@2
         displayName: 'Copy Files to: $(build.artifactstagingdirectory)\AzureDeploy'
