@@ -60,19 +60,20 @@ stages:
         vmImage: windows-latest
       environment: SysTest
       variables: 
-          appName: 'PasLookupDataApi'
+          appName: 'Pas'
+          appServiceNamePrefix: 'PasLookupDataApi'
           environment: 'systest'
-          resourceGroupName: 'Pas-rg-$(environment)'
-          appServiceName: '$(appName)-svc-$(environment)'
+          resourceGroupName: '$(appName)-rg-$(environment)'          
           appInsightsName: '$(appName)-ins-$(environment)'
           appServicePlanName: '$(appName)-asp-$(environment)'
+          appServiceName: '$(appServiceNamePrefix)-svc-$(environment)'
+          siteName: '$(appServiceNamePrefix)-svc-$(environment)'
           location: 'East US'
           owner: 'RichardCorkery.com'
-          siteName: '$(appName)-svc-$(environment)'
           skuName: 'F1'
           corsWithOriginsUrl: 'https://localhost:44329,https://localhost:5001'
           storageAccountName: 'passtoragest' 
-          storageAccountResourceGroupName: 'Pas-rg-$(environment)' # Currenly these are in the same Resource Group
+          storageAccountResourceGroupName: '$(appName)-rg-$(environment)' # Currenly these are in the same Resource Group.  But that was not always the case
           buildNumber: Build.BuildNumber #This is here to be used in the Intergration Test
           
       strategy:
