@@ -1,5 +1,5 @@
-#trigger:
-#- main
+trigger:
+- main
 
 name: $(Year:yyyy).$(Date:MM).$(Date:dd)$(Rev:.rr)
 
