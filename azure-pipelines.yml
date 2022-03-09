@@ -1,7 +1,6 @@
 trigger: 
  - main
-
-# trigger: none
+#- none 
 
 name: $(Year:yyyy).$(Date:MM).$(Date:dd)$(Rev:.rr)
 
