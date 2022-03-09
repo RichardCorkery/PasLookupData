@@ -1,7 +1,5 @@
 trigger: none
 
-#Trigger test
-
 name: $(Year:yyyy).$(Date:MM).$(Date:dd)$(Rev:.rr)
 
 stages:
