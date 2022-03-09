@@ -72,7 +72,8 @@ stages:
           skuName: 'F1'
           corsWithOriginsUrl: 'https://localhost:44329,https://localhost:5001'
           storageAccountName: 'passtoragest' 
-          storageAccountResourceGroupName: 'PasStorage-rg-systest'          
+          storageAccountResourceGroupName: 'PasStorage-rg-systest'
+          buildNumber: Build.BuildNumber #This is here to be used in the Intergration Test
           
       strategy:
         runOnce:
