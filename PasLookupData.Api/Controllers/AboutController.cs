@@ -13,7 +13,7 @@ namespace PasLookupData.Api.Controllers
         {
             var appName = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            //$$$RAC: Revisit the versions
+            
             var buildVersion = $"{ version.Major:0000}.{ version.Minor:00}.{ version.Build:00}.{ version.Revision:00}";
 
             var message = $@"App Name: {appName}<br/><br/>

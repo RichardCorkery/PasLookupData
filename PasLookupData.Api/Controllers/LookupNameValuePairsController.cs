@@ -28,9 +28,7 @@ namespace LookupTableAdminDemo.Api.Controllers
         }
 
         // GET: api/vpb-delegates
-
-        //ToDo: Deploy to Azure
-
+        
         //ToDo: Review PS ToDo App
         //ToDo: Confirm Delete
         //ToDo: Set up DI
