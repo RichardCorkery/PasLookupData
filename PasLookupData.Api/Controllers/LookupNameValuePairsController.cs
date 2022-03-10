@@ -16,10 +16,13 @@ public class LookupNameValuePairsController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly CloudTable _table;
 
-    public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, IConfiguration configuration)
+    private readonly ILookupNameValuePairRepository _lookupNameValuePairRepository;
+
+    public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, IConfiguration configuration, ILookupNameValuePairRepository lookupNameValuePairRepository)
     {
         _logger = logger;
         _configuration = configuration;
+        _lookupNameValuePairRepository = lookupNameValuePairRepository;
 
         //var storageAccount = CloudStorageAccount.Parse(_configuration["Data:AzureStorageDemos:ConnectionString"]);
 
@@ -32,7 +35,6 @@ public class LookupNameValuePairsController : ControllerBase
     
     //ToDo: Review PS ToDo App
     //ToDo: Confirm Delete
-    //ToDo: Set up DI
     //ToDo: Review Controller of the function app I did
     //ToDo: Set up so only my Client can access the API: https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis
     //  - Or maybe just set up okta?  
@@ -41,12 +43,13 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpGet]
     public IEnumerable<LookupNameValuePairModel> Get()
     {
-        //ToDo: constant: "Data:AzureStorageDemos:ConnectionString"
-        var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
+        //ToDo: DI XTB
+        //ToDo: Clean up code not needed here since you added DI
+        //var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
 
-        var repository = new LookupNameValuePairRepository(cnnStr);
+        //var repository = new LookupNameValuePairRepository(cnnStr);
 
-        var entities = repository.All();
+        var entities = _lookupNameValuePairRepository.All();
 
         var models = entities.Select(x => new LookupNameValuePairModel
         {

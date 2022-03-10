@@ -3,8 +3,22 @@ using PasLookupData.Api.Entities;
 
 namespace PasLookupData.Api.Repositories;
 
+public interface ILookupNameValuePairRepository
+{
+    IEnumerable<LookupNameValuePairEntity> All();
+    void Insert(LookupNameValuePairEntity entity);
+
+    void Update(LookupNameValuePairEntity entity);
+
+    void CreateOrUpdate(LookupNameValuePairEntity entity);
+
+    void Delete(LookupNameValuePairEntity entity);
+
+    LookupNameValuePairEntity Get(string partitionKey, string rowKey);
+}
+
 //ToDo2: Refactor with Generic Repo?
-public class LookupNameValuePairRepository
+public class LookupNameValuePairRepository : ILookupNameValuePairRepository
 {
     private CloudTable _lookupNameValuePairTable = null;
 
