@@ -1,6 +1,6 @@
 using Microsoft.Azure.Cosmos.Table;
 
-namespace LookupTableAdminDemo.Api.Entities;
+namespace PasLookupData.Api.Entities;
 
 public class LookupNameValuePairEntity : TableEntity
 {

@@ -1,10 +1,10 @@
-using LookupTableAdminDemo.Api.Entities;
-using LookupTableAdminDemo.Api.Models;
-using LookupTableAdminDemo.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Table;
+using PasLookupData.Api.Entities;
+using PasLookupData.Api.Models;
+using PasLookupData.Api.Repositories;
 
-namespace LookupTableAdminDemo.Api.Controllers
+namespace PasLookupData.Api.Controllers
 {
     //ToDo: Constants
     [Route("api/[controller]")]

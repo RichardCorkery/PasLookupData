@@ -1,8 +1,7 @@
-﻿using LookupTableAdminDemo.Api.Entities;
-using LookupTableAdminDemo.Api.Models;
-using Microsoft.Azure.Cosmos.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
+using PasLookupData.Api.Entities;
 
-namespace LookupTableAdminDemo.Api.Repositories;
+namespace PasLookupData.Api.Repositories;
 
 public class LookupNameValuePairRepository
 {

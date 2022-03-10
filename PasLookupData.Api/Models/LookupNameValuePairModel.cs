@@ -1,4 +1,4 @@
-namespace LookupTableAdminDemo.Api.Models;
+namespace PasLookupData.Api.Models;
 
 public class LookupNameValuePairModel 
 {
