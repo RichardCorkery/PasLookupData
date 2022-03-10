@@ -18,8 +18,9 @@ namespace PasLookupData.Api.Controllers
 
             var message = $@"App Name: {appName}<br/><br/>
                              Build: {buildVersion}<br/><br/>
-                             Owner: PasLookupData.Api Developers<br/><br/>
-                             <a href=""/swagger"">Swagger API Documentation</a>";
+                             Owner: PasLookupData.Api Developers<br/><br/>";
+                            //ToDo: Figure out if and what environment swagger should be enabled in Azure.  Once done the line below can be uncommented
+                            //<a href=""/swagger"">Swagger API Documentation</a>";
 
             var contentResult = new ContentResult()
             {
