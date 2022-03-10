@@ -3,6 +3,7 @@ using PasLookupData.Api.Entities;
 
 namespace PasLookupData.Api.Repositories;
 
+//ToDo2: Refactor with Generic Repo?
 public class LookupNameValuePairRepository
 {
     private CloudTable _lookupNameValuePairTable = null;
