@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Table;
 using PasLookupData.Api.Entities;
 using PasLookupData.Api.Models;
 using PasLookupData.Api.Repositories;
@@ -13,26 +12,18 @@ namespace PasLookupData.Api.Controllers;
 public class LookupNameValuePairsController : ControllerBase
 {
     private readonly ILogger<LookupNameValuePairsController> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly CloudTable _table;
-
     private readonly ILookupNameValuePairRepository _lookupNameValuePairRepository;
 
-    public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, IConfiguration configuration, ILookupNameValuePairRepository lookupNameValuePairRepository)
+    //ToDo: Add Logging
+
+    //ToDo: Unit Tests 
+    public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, ILookupNameValuePairRepository lookupNameValuePairRepository)
     {
         _logger = logger;
-        _configuration = configuration;
         _lookupNameValuePairRepository = lookupNameValuePairRepository;
-
-        //var storageAccount = CloudStorageAccount.Parse(_configuration["Data:AzureStorageDemos:ConnectionString"]);
-
-        //var tableClient = storageAccount.CreateCloudTableClient();
-
-        //_table = tableClient.GetTableReference("LookupNameValuePair");
     }
 
     // GET: api/vpb-delegates
-    
     //ToDo: Review PS ToDo App
     //ToDo: Confirm Delete
     //ToDo: Review Controller of the function app I did
@@ -43,12 +34,6 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpGet]
     public IEnumerable<LookupNameValuePairModel> Get()
     {
-        //ToDo: DI XTB
-        //ToDo: Clean up code not needed here since you added DI
-        //var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
-
-        //var repository = new LookupNameValuePairRepository(cnnStr);
-
         var entities = _lookupNameValuePairRepository.All();
 
         var models = entities.Select(x => new LookupNameValuePairModel
@@ -66,12 +51,7 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpGet("partitionKey, rowKey")]
     public LookupNameValuePairModel Get(string partitionKey, string rowKey)
     {
-        var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
-
-        var repository = new LookupNameValuePairRepository(cnnStr);
-
-
-        var entity = repository.Get(partitionKey, rowKey);
+        var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
         var model = new LookupNameValuePairModel
         {
@@ -91,9 +71,6 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpPost]
     public LookupNameValuePairModel Post(LookupNameValuePairModel model)
     {
-        var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
-
-        var repository = new LookupNameValuePairRepository(cnnStr);
 
         var entity = new LookupNameValuePairEntity
         {
@@ -103,42 +80,31 @@ public class LookupNameValuePairsController : ControllerBase
             Value = model.Value
         };
 
-        repository.Insert(entity);
+        _lookupNameValuePairRepository.Insert(entity);
 
         model.RowKey = entity.RowKey;
 
         return model;
-
     }
 
     // PUT api/lookupnamevaluepairs/???
     [HttpPut]
     public void Put(LookupNameValuePairModel model)
     {
-        var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
-
-        var repository = new LookupNameValuePairRepository(cnnStr);
-
-        var entity = repository.Get(model.PartitionKey, model.RowKey);
+        var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
         
         entity.LookupKey = model.LookupKey;
         entity.Value = model.Value;
 
-        repository.Update(entity);
+        _lookupNameValuePairRepository.Update(entity);
     }
 
     // PUT api/lookupnamevaluepairs/???
     [HttpDelete]
     public void Delete(string partitionKey, string rowKey)
     {
+        var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
-        var cnnStr = _configuration["Data:AzureStorageDemos:ConnectionString"];
-
-        var repository = new LookupNameValuePairRepository(cnnStr);
-
-        var entity = repository.Get(partitionKey, rowKey);
-
-        repository.Delete(entity);
-
+        _lookupNameValuePairRepository.Delete(entity);
     }
 }
