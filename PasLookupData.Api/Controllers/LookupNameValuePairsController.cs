@@ -7,8 +7,8 @@ using PasLookupData.Api.Repositories;
 
 namespace PasLookupData.Api.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class LookupNameValuePairsController : ControllerBase
 {
     private readonly ILogger<LookupNameValuePairsController> _logger;
@@ -23,14 +23,12 @@ public class LookupNameValuePairsController : ControllerBase
         _lookupNameValuePairRepository = lookupNameValuePairRepository;
     }
 
-    // GET: api/vpb-delegates
-    //ToDo: Review PS ToDo App
-    //ToDo: Confirm Delete
     //ToDo: Review Controller of the function app I did
     //ToDo: Set up so only my Client can access the API: https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis
     //  - Or maybe just set up okta?  
 
     // GET: api/lookupnamevaluepairs
+    //ToDo: What value should really be returned for each method?
     [HttpGet]
     public IEnumerable<LookupNameValuePairModel> Get()
     {
@@ -47,11 +45,16 @@ public class LookupNameValuePairsController : ControllerBase
         return models.ToArray();
     }
 
-    // GET: api/lookupnamevaluepairs/00000
+    // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
+    // ToDo:2 Review what the template values below buys me
     [HttpGet("partitionKey, rowKey")]
     public LookupNameValuePairModel Get(string partitionKey, string rowKey)
     {
         var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+
+        //ToDo: Test if null, and return not found
+        //ToDo: What else can be Http code should be returned
+        //ToDo: Review some of my other apis
 
         var model = new LookupNameValuePairModel
         {
@@ -62,7 +65,6 @@ public class LookupNameValuePairsController : ControllerBase
         };
 
         return model;
-
     }
 
     // POST api/lookupnamevaluepairs
@@ -71,7 +73,6 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpPost]
     public LookupNameValuePairModel Post(LookupNameValuePairModel model)
     {
-
         var entity = new LookupNameValuePairEntity
         {
             PartitionKey = model.PartitionKey,
@@ -87,11 +88,13 @@ public class LookupNameValuePairsController : ControllerBase
         return model;
     }
 
-    // PUT api/lookupnamevaluepairs/???
+    // PUT api/lookupnamevaluepairs
     [HttpPut]
     public void Put(LookupNameValuePairModel model)
     {
         var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+
+        //ToDo: Test if null, and return not found
         
         entity.LookupKey = model.LookupKey;
         entity.Value = model.Value;
@@ -99,12 +102,12 @@ public class LookupNameValuePairsController : ControllerBase
         _lookupNameValuePairRepository.Update(entity);
     }
 
-    // PUT api/lookupnamevaluepairs/???
-    [HttpDelete]
+    // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
+    [HttpDelete("partitionKey, rowKey")]
     public void Delete(string partitionKey, string rowKey)
     {
         var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
-
+        //ToDo: Test if null, and return not found
         _lookupNameValuePairRepository.Delete(entity);
     }
 }
