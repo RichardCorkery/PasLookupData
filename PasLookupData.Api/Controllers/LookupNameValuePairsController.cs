@@ -1,9 +1,17 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PasLookupData.Api.Entities;
 using PasLookupData.Api.Models;
 using PasLookupData.Api.Repositories;
+using PasLookupData.Api.Common;
+
+//ToDo: Move the using above to a shared location
 
 //ToDo: Review this whole file structure
+
+//ToDo: API Version?
+//ToDo: Try Catch?
+
 
 namespace PasLookupData.Api.Controllers;
 
@@ -32,17 +40,37 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpGet]
     public IEnumerable<LookupNameValuePairModel> Get()
     {
-        var entities = _lookupNameValuePairRepository.All();
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
-        var models = entities.Select(x => new LookupNameValuePairModel
+        try
         {
-            RowKey = x.RowKey,
-            PartitionKey = x.PartitionKey,
-            LookupKey = x.LookupKey,
-            Value = x.Value
-        });
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-        return models.ToArray();
+            //ToDo: Push this processing down on an Orchestrator / Service?
+            var entities = _lookupNameValuePairRepository.All();
+
+            var models = entities.Select(x => new LookupNameValuePairModel
+            {
+                RowKey = x.RowKey,
+                PartitionKey = x.PartitionKey,
+                LookupKey = x.LookupKey,
+                Value = x.Value
+            });
+
+            return models.ToArray();
+
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError(ex, $"{logHeader} {MessageConstant.ErrorGettingVpbDelegates}");
+            //return StatusCode(StatusCodes.Status500InternalServerError, MessageConstant.ErrorGettingVpbDelegates);
+
+            return null;
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
     }
 
     // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
