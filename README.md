@@ -10,3 +10,4 @@ An API to access Lookup Data for PAS
   +  The Release stage uses an ARM Template file
 
 * Gets Connection String from the Storage Account in another Resource Group
+* Basic Logging
