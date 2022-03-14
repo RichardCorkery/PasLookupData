@@ -1,11 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using PasLookupData.Api.Entities;
-using PasLookupData.Api.Models;
-using PasLookupData.Api.Repositories;
-using PasLookupData.Api.Common;
-
-//ToDo: Move the using above to a shared location
-
 //ToDo: Review this whole file structure
 
 //ToDo: API Version?

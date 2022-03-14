@@ -1,5 +1,3 @@
-using Microsoft.Azure.Cosmos.Table;
-
 namespace PasLookupData.Api.Entities;
 
 public class LookupNameValuePairEntity : TableEntity

@@ -1,7 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using PasLookupData.Api.Entities;
-
-namespace PasLookupData.Api.Repositories;
+﻿namespace PasLookupData.Api.Repositories;
 
 public interface ILookupNameValuePairRepository
 {
