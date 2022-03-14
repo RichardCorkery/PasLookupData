@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PasLookupData.Api.Entities;
 using PasLookupData.Api.Models;
@@ -10,8 +9,6 @@ using PasLookupData.Api.Common;
 //ToDo: Review this whole file structure
 
 //ToDo: API Version?
-//ToDo: Try Catch?
-
 
 namespace PasLookupData.Api.Controllers;
 
@@ -21,8 +18,6 @@ public class LookupNameValuePairsController : ControllerBase
 {
     private readonly ILogger<LookupNameValuePairsController> _logger;
     private readonly ILookupNameValuePairRepository _lookupNameValuePairRepository;
-
-    //ToDo: Add Logging
 
     //ToDo: Unit Tests 
     public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, ILookupNameValuePairRepository lookupNameValuePairRepository)
@@ -40,6 +35,8 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpGet]
     public IEnumerable<LookupNameValuePairModel> Get()
     {
+
+        //ToDo 2: Use Decorator DP for logging?
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
         try
@@ -58,13 +55,10 @@ public class LookupNameValuePairsController : ControllerBase
             });
 
             return models.ToArray();
-
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, $"{logHeader} {MessageConstant.ErrorGettingVpbDelegates}");
-            //return StatusCode(StatusCodes.Status500InternalServerError, MessageConstant.ErrorGettingVpbDelegates);
-
+            //ToDo: What do I want to return here?
             return null;
         }
         finally
@@ -74,25 +68,41 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
-    // ToDo:2 Review what the template values below buys me
+    // ToDo 2: Review what the template values below buys me
     [HttpGet("partitionKey, rowKey")]
     public LookupNameValuePairModel Get(string partitionKey, string rowKey)
     {
-        var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
-        //ToDo: Test if null, and return not found
-        //ToDo: What else can be Http code should be returned
-        //ToDo: Review some of my other apis
-
-        var model = new LookupNameValuePairModel
+        try
         {
-            RowKey = entity.RowKey,
-            PartitionKey = entity.PartitionKey,
-            LookupKey = entity.LookupKey,
-            Value = entity.Value
-        };
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-        return model;
+            //ToDo: Test if null, and return not found
+            //ToDo: What else can be Http code should be returned
+            //ToDo: Review some of my other apis
+
+            var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+
+            var model = new LookupNameValuePairModel
+            {
+                RowKey = entity.RowKey,
+                PartitionKey = entity.PartitionKey,
+                LookupKey = entity.LookupKey,
+                Value = entity.Value
+            };
+
+            return model;
+        }
+        catch (Exception ex)
+        {
+            //ToDo: What do I want to return here?
+            return null;
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
     }
 
     // POST api/lookupnamevaluepairs
@@ -101,41 +111,88 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpPost]
     public LookupNameValuePairModel Post(LookupNameValuePairModel model)
     {
-        var entity = new LookupNameValuePairEntity
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
+
+        try
         {
-            PartitionKey = model.PartitionKey,
-            RowKey = Guid.NewGuid().ToString(),
-            LookupKey = model.LookupKey,
-            Value = model.Value
-        };
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-        _lookupNameValuePairRepository.Insert(entity);
+            var entity = new LookupNameValuePairEntity
+            {
+                PartitionKey = model.PartitionKey,
+                RowKey = Guid.NewGuid().ToString(),
+                LookupKey = model.LookupKey,
+                Value = model.Value
+            };
 
-        model.RowKey = entity.RowKey;
+            _lookupNameValuePairRepository.Insert(entity);
 
-        return model;
+            model.RowKey = entity.RowKey;
+
+            return model;
+        }
+        catch (Exception ex)
+        {
+            //ToDo: What do I want to return here?
+            return null;
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
     }
 
     // PUT api/lookupnamevaluepairs
     [HttpPut]
     public void Put(LookupNameValuePairModel model)
     {
-        var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
-        //ToDo: Test if null, and return not found
-        
-        entity.LookupKey = model.LookupKey;
-        entity.Value = model.Value;
+        try
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-        _lookupNameValuePairRepository.Update(entity);
+            var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+
+            //ToDo: Test if null, and return not found
+
+            entity.LookupKey = model.LookupKey;
+            entity.Value = model.Value;
+
+            _lookupNameValuePairRepository.Update(entity);
+        }
+        catch (Exception ex)
+        {
+            //ToDo: What do I want to return here?
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
+
     }
 
     // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
     [HttpDelete("partitionKey, rowKey")]
     public void Delete(string partitionKey, string rowKey)
     {
-        var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
-        //ToDo: Test if null, and return not found
-        _lookupNameValuePairRepository.Delete(entity);
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
+
+        try
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
+
+            var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+            //ToDo: Test if null, and return not found
+            _lookupNameValuePairRepository.Delete(entity);
+        }
+        catch (Exception ex)
+        {
+            //ToDo: What do I want to return here?
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
     }
 }
