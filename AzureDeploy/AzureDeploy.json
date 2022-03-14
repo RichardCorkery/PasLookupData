@@ -112,7 +112,8 @@
             "name": "[parameters('appServiceName')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]", 
+                "[resourceId('microsoft.insights/components/', parameters('appInsightsName'))]"
             ],
             "tags": {
                 "owner": "[parameters('owner')]",
@@ -155,7 +156,11 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
             ],
-            "properties": {  
+            "properties": {
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]",
+                "APPLICATIONINSIGHTS_CONNECTION_STRING": "[concat('InstrumentationKey=',reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey)]",
+                "ApplicationInsightsAgent_EXTENSION_VERSION":"~2", 
+                "WEBSITE_RUN_FROM_PACKAGE": "1",      
                 "UseMockServices": false, 
                 "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",              
                 "Data:AzureStorageDemos:ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(parameters('storageAccountResourceGroupName'),'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
