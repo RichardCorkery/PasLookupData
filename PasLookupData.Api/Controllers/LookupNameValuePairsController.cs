@@ -24,8 +24,10 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/lookupnamevaluepairs
     //ToDo: What value should really be returned for each method?
+    //ToDo: What can be made: Task<IActionResult>
     [HttpGet]
-    public IEnumerable<LookupNameValuePairModel> Get()
+    public IActionResult Get()
+    //public IEnumerable<LookupNameValuePairModel> Get()
     {
 
         //ToDo 2: Use Decorator DP for logging?
@@ -37,6 +39,8 @@ public class LookupNameValuePairsController : ControllerBase
 
             //ToDo: Push this processing down on an Orchestrator / Service?
             var entities = _lookupNameValuePairRepository.All();
+            //ToDo: Test for entities == null, then return not found
+
 
             var models = entities.Select(x => new LookupNameValuePairModel
             {
@@ -46,12 +50,13 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = x.Value
             });
 
-            return models.ToArray();
+            return (IActionResult) new OkObjectResult(models.ToArray());
         }
         catch (Exception ex)
         {
-            //ToDo: What do I want to return here?
-            return null;
+            var message = "An error occurred while getting the LookupNameValuePairs";
+            _logger.LogError(ex,  $"{logHeader} {message} ");
+            return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
         finally
         {
@@ -62,7 +67,7 @@ public class LookupNameValuePairsController : ControllerBase
     // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
     // ToDo 2: Review what the template values below buys me
     [HttpGet("partitionKey, rowKey")]
-    public LookupNameValuePairModel Get(string partitionKey, string rowKey)
+    public IActionResult Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -76,6 +81,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
+            //ToDo: Test entity == null, return not found
             var model = new LookupNameValuePairModel
             {
                 RowKey = entity.RowKey,
@@ -84,12 +90,13 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = entity.Value
             };
 
-            return model;
+            return (IActionResult)new OkObjectResult(model);
         }
         catch (Exception ex)
         {
-            //ToDo: What do I want to return here?
-            return null;
+            var message = "An error occurred while getting the LookupNameValuePair";
+            _logger.LogError(ex, $"{logHeader} {message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
         finally
         {
