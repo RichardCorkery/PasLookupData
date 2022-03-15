@@ -43,7 +43,6 @@ public class LookupNameValuePairsController : ControllerBase
             var entities = _lookupNameValuePairRepository.All();
             //ToDo: Test for entities == null, then return not found
 
-
             var models = entities.Select(x => new LookupNameValuePairModel
             {
                 RowKey = x.RowKey,
@@ -52,7 +51,7 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = x.Value
             });
 
-            return (IActionResult) new OkObjectResult(models.ToArray());
+            return Ok(models.ToArray());
         }
         catch (Exception ex)
         {
@@ -92,7 +91,7 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = entity.Value
             };
 
-            return (IActionResult)new OkObjectResult(model);
+            return Ok(model);
         }
         catch (Exception ex)
         {
@@ -107,6 +106,7 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // POST api/lookupnamevaluepairs
+    //ToDo: Should the whole model returned, or just the Row Id?
     [HttpPost]
     public IActionResult Post(LookupNameValuePairModel model)
     {
@@ -143,63 +143,68 @@ public class LookupNameValuePairsController : ControllerBase
         }
     }
 
-    //// PUT api/lookupnamevaluepairs
-    //[HttpPut]
-    //public IActionResult Put(LookupNameValuePairModel model)
-    //{
-    //    var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
+    // PUT api/lookupnamevaluepairs
+    [HttpPut]
+    public IActionResult Put(LookupNameValuePairModel model)
+    {
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
-    //    try
-    //    {
-    //        _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
+        try
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-    //        var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+            var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+            
+            //ToDo: Test if null, and return not found
+            //if (entity == null) return NotFound("Error Message");
 
-    //        //ToDo: Test if null, and return not found
+            entity.LookupKey = model.LookupKey;
+            entity.Value = model.Value;
 
-    //        entity.LookupKey = model.LookupKey;
-    //        entity.Value = model.Value;
+            _lookupNameValuePairRepository.Update(entity);
 
-    //        _lookupNameValuePairRepository.Update(entity);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        //ToDo: Add info about which entity had the issue?
-    //        var message = "An error occurred while updating the LookupNameValuePair";
-    //        _logger.LogError(ex, $"{logHeader} {message}");
-    //        return StatusCode(StatusCodes.Status500InternalServerError, message);
-    //    }
-    //    finally
-    //    {
-    //        _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
-    //    }
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            //ToDo: Add info about which entity had the issue?
+            var message = "An error occurred while updating the LookupNameValuePair";
+            _logger.LogError(ex, $"{logHeader} {message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, message);
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
 
-    //}
+    }
 
-    //// DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
-    //[HttpDelete("partitionKey, rowKey")]
-    //public IActionResult Delete(string partitionKey, string rowKey)
-    //{
-    //    var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
+    // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
+    [HttpDelete("partitionKey, rowKey")]
+    public IActionResult Delete(string partitionKey, string rowKey)
+    {
+        var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
-    //    try
-    //    {
-    //        _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
+        try
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-    //        var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
-    //        //ToDo: Test if null, and return not found
-    //        _lookupNameValuePairRepository.Delete(entity);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        //ToDo: Add info about which entity had the issue?
-    //        var message = "An error occurred while deleting  the LookupNameValuePair";
-    //        _logger.LogError(ex, $"{logHeader} {message}");
-    //        return StatusCode(StatusCodes.Status500InternalServerError, message);
-    //    }
-    //    finally
-    //    {
-    //        _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
-    //    }
-    //}
+            var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+            //ToDo: Test if null, and return not found
+            _lookupNameValuePairRepository.Delete(entity);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            //ToDo: Add info about which entity had the issue?
+            var message = "An error occurred while deleting  the LookupNameValuePair";
+            _logger.LogError(ex, $"{logHeader} {message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, message);
+        }
+        finally
+        {
+            _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
+        }
+    }
 }
