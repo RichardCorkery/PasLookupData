@@ -2,7 +2,7 @@
 
 //ToDo: API Version?
 //ToDo: Review API PS Class Notes
-//ToDo: Work API: Returns???
+//ToDo: Review Work API: Returns???
 
 namespace PasLookupData.Api.Controllers;
 
@@ -31,7 +31,6 @@ public class LookupNameValuePairsController : ControllerBase
     public IActionResult Get()
     //public IEnumerable<LookupNameValuePairModel> Get()
     {
-
         //ToDo 2: Use Decorator DP for logging?
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -41,7 +40,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             //ToDo: Push this processing down on an Orchestrator / Service?
             var entities = _lookupNameValuePairRepository.All();
-            //ToDo: Test for entities == null, then return not found
+            if (!entities.Any()) return NotFound("No LookupNameValuePairs found");
 
             var models = entities.Select(x => new LookupNameValuePairModel
             {
@@ -67,6 +66,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
     // ToDo 2: Review what the template values below buys me
+    //  ToDo: See above, does it make the values required?
     [HttpGet("partitionKey, rowKey")]
     public IActionResult Get(string partitionKey, string rowKey)
     {
@@ -74,15 +74,18 @@ public class LookupNameValuePairsController : ControllerBase
 
         try
         {
+            //ToDo: Log the parameters?
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
-
-            //ToDo: Test if null, and return not found
+            
             //ToDo: What else can be Http code should be returned
             //ToDo: Review some of my other apis
 
             var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
-            //ToDo: Test entity == null, return not found
+            //ToDo: Include additoinal info (Parameters)?
+            //  - Log it?
+            if (entity == null) return NotFound("No LookupNameValuePair found");
+
             var model = new LookupNameValuePairModel
             {
                 RowKey = entity.RowKey,
@@ -154,9 +157,10 @@ public class LookupNameValuePairsController : ControllerBase
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
             var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
-            
-            //ToDo: Test if null, and return not found
-            //if (entity == null) return NotFound("Error Message");
+
+            //ToDo: Include additoinal info (Parameters)?
+            //  - Log it?
+            if (entity == null) return NotFound("No LookupNameValuePair found"); ;
 
             entity.LookupKey = model.LookupKey;
             entity.Value = model.Value;
@@ -176,7 +180,6 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Ended}");
         }
-
     }
 
     // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
@@ -190,7 +193,11 @@ public class LookupNameValuePairsController : ControllerBase
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
             var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
-            //ToDo: Test if null, and return not found
+
+            //ToDo: Include additoinal info (Parameters)?
+            //  - Log it?
+            if (entity == null) return NotFound("No LookupNameValuePair found"); 
+
             _lookupNameValuePairRepository.Delete(entity);
 
             return Ok();
