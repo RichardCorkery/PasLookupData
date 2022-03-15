@@ -26,6 +26,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/lookupnamevaluepairs
     //ToDo: What value should really be returned for each method?
+    //ToDo: Any way to make this async?
     [HttpGet]
     public IActionResult Get()
     {
