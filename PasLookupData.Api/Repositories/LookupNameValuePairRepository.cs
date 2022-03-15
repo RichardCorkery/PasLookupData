@@ -4,11 +4,10 @@ public interface ILookupNameValuePairRepository
 {
     IEnumerable<LookupNameValuePairEntity> All();
     Task<LookupNameValuePairEntity> Get(string partitionKey, string rowKey);
-    void Insert(LookupNameValuePairEntity entity);
-    void Update(LookupNameValuePairEntity entity);
-    void CreateOrUpdate(LookupNameValuePairEntity entity);
-    void Delete(LookupNameValuePairEntity entity);
-    
+    Task Insert(LookupNameValuePairEntity entity);
+    Task Update(LookupNameValuePairEntity entity);
+    Task CreateOrUpdate(LookupNameValuePairEntity entity);
+    Task Delete(LookupNameValuePairEntity entity);
 }
 
 //ToDo2: Refactor with Generic Repo?
@@ -19,14 +18,13 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
     public LookupNameValuePairRepository(string cnnStr)
     {
         var storageAccount = CloudStorageAccount.Parse(cnnStr);
-
         var tableClient = storageAccount.CreateCloudTableClient();
-
         _lookupNameValuePairTable = tableClient.GetTableReference("LookupNameValuePair");
     }
 
     public IEnumerable<LookupNameValuePairEntity> All()
     {
+        //ToDo: Review commented out code below
         var query = new TableQuery<LookupNameValuePairEntity>();
             //.Where(TableQuery.GenerateFilterConditionForBool(nameof(LookupNameValuePairEntity.Completed),
             //    QueryComparisons.Equal,
@@ -45,32 +43,28 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         return result.Result as LookupNameValuePairEntity;
     }
 
-    public void Insert(LookupNameValuePairEntity entity)
+    public async Task Insert(LookupNameValuePairEntity entity)
     {
         var operation = TableOperation.Insert(entity);
-
-        _lookupNameValuePairTable.Execute(operation);
+        await _lookupNameValuePairTable.ExecuteAsync(operation);
     }
 
-    public void Update(LookupNameValuePairEntity entity)
+    public async Task Update(LookupNameValuePairEntity entity)
     {
         var operation = TableOperation.Replace(entity);
-
-        _lookupNameValuePairTable.Execute(operation);
+        await _lookupNameValuePairTable.ExecuteAsync(operation);
     }
 
     //Note: You can have CreateOrUpdate
-    public void CreateOrUpdate(LookupNameValuePairEntity entity)
+    public async Task CreateOrUpdate(LookupNameValuePairEntity entity)
     {
         var operation = TableOperation.InsertOrReplace(entity);
-
-        _lookupNameValuePairTable.Execute(operation);
+        await _lookupNameValuePairTable.ExecuteAsync(operation);
     }
 
-    public void Delete(LookupNameValuePairEntity entity)
+    public async Task Delete(LookupNameValuePairEntity entity)
     {
         var operation = TableOperation.Delete(entity);
-
-        _lookupNameValuePairTable.Execute(operation);
+        await _lookupNameValuePairTable.ExecuteAsync(operation);
     }
 }

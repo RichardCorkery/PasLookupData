@@ -26,10 +26,8 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/lookupnamevaluepairs
     //ToDo: What value should really be returned for each method?
-    //ToDo: What can be made: Task<IActionResult>
     [HttpGet]
     public IActionResult Get()
-    //public IEnumerable<LookupNameValuePairModel> Get()
     {
         //ToDo 2: Use Decorator DP for logging?
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -110,7 +108,7 @@ public class LookupNameValuePairsController : ControllerBase
     // POST api/lookupnamevaluepairs
     //ToDo: Should the whole model returned, or just the Row Id?
     [HttpPost]
-    public IActionResult Post(LookupNameValuePairModel model)
+    public async Task<IActionResult> Post(LookupNameValuePairModel model)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -118,6 +116,7 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
+            //ToDo: try and do a get first???  
             var entity = new LookupNameValuePairEntity
             {
                 PartitionKey = model.PartitionKey,
@@ -126,7 +125,7 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = model.Value
             };
 
-            _lookupNameValuePairRepository.Insert(entity);
+            await _lookupNameValuePairRepository.Insert(entity);
 
             model.RowKey = entity.RowKey;
 
@@ -164,7 +163,7 @@ public class LookupNameValuePairsController : ControllerBase
             entity.LookupKey = model.LookupKey;
             entity.Value = model.Value;
 
-            _lookupNameValuePairRepository.Update(entity);
+            await _lookupNameValuePairRepository.Update(entity);
 
             return Ok();
         }
@@ -197,7 +196,7 @@ public class LookupNameValuePairsController : ControllerBase
             //  - Log it?
             if (entity == null) return NotFound("No LookupNameValuePair found"); 
 
-            _lookupNameValuePairRepository.Delete(entity);
+            await _lookupNameValuePairRepository.Delete(entity);
 
             return Ok();
         }
