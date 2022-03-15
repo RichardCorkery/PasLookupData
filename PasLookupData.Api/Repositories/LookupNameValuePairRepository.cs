@@ -3,25 +3,21 @@
 public interface ILookupNameValuePairRepository
 {
     IEnumerable<LookupNameValuePairEntity> All();
+    Task<LookupNameValuePairEntity> Get(string partitionKey, string rowKey);
     void Insert(LookupNameValuePairEntity entity);
-
     void Update(LookupNameValuePairEntity entity);
-
     void CreateOrUpdate(LookupNameValuePairEntity entity);
-
     void Delete(LookupNameValuePairEntity entity);
-
-    LookupNameValuePairEntity Get(string partitionKey, string rowKey);
+    
 }
 
 //ToDo2: Refactor with Generic Repo?
 public class LookupNameValuePairRepository : ILookupNameValuePairRepository
 {
-    private CloudTable _lookupNameValuePairTable = null;
+    private readonly CloudTable _lookupNameValuePairTable;
 
     public LookupNameValuePairRepository(string cnnStr)
     {
-
         var storageAccount = CloudStorageAccount.Parse(cnnStr);
 
         var tableClient = storageAccount.CreateCloudTableClient();
@@ -37,6 +33,16 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
             //    false));
 
         return _lookupNameValuePairTable.ExecuteQuery(query);
+    }
+
+    public async Task<LookupNameValuePairEntity> Get(string partitionKey, string rowKey)
+    {
+        var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey);
+
+        var result = await _lookupNameValuePairTable.ExecuteAsync(operation);
+
+        //ToDo: Can result be null?
+        return result.Result as LookupNameValuePairEntity;
     }
 
     public void Insert(LookupNameValuePairEntity entity)
@@ -66,14 +72,5 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         var operation = TableOperation.Delete(entity);
 
         _lookupNameValuePairTable.Execute(operation);
-    }
-
-    public LookupNameValuePairEntity Get(string partitionKey, string rowKey)
-    {
-        var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey);
-
-        var result = _lookupNameValuePairTable.Execute(operation);
-
-        return result.Result as LookupNameValuePairEntity;
     }
 }

@@ -66,9 +66,8 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
     // ToDo 2: Review what the template values below buys me
-    //  ToDo: See above, does it make the values required?
     [HttpGet("partitionKey, rowKey")]
-    public IActionResult Get(string partitionKey, string rowKey)
+    public async Task<IActionResult> Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -80,7 +79,7 @@ public class LookupNameValuePairsController : ControllerBase
             //ToDo: What else can be Http code should be returned
             //ToDo: Review some of my other apis
 
-            var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+            var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
             //ToDo: Include additoinal info (Parameters)?
             //  - Log it?
@@ -148,7 +147,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // PUT api/lookupnamevaluepairs
     [HttpPut]
-    public IActionResult Put(LookupNameValuePairModel model)
+    public async Task<IActionResult> Put(LookupNameValuePairModel model)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -156,7 +155,7 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-            var entity = _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+            var entity = await _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
 
             //ToDo: Include additoinal info (Parameters)?
             //  - Log it?
@@ -184,7 +183,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
     [HttpDelete("partitionKey, rowKey")]
-    public IActionResult Delete(string partitionKey, string rowKey)
+    public async Task<IActionResult> Delete(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -192,7 +191,7 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-            var entity = _lookupNameValuePairRepository.Get(partitionKey, rowKey);
+            var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
             //ToDo: Include additoinal info (Parameters)?
             //  - Log it?
