@@ -75,7 +75,7 @@ public class LookupNameValuePairsController : ControllerBase
             //ToDo: Log the parameters?
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
             
-            //ToDo: What else can be Http code should be returned
+            
             //ToDo: Review some of my other apis
 
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);

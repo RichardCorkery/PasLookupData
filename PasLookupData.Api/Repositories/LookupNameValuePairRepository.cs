@@ -3,7 +3,7 @@
 public interface ILookupNameValuePairRepository
 {
     IEnumerable<LookupNameValuePairEntity> All();
-    Task<LookupNameValuePairEntity> Get(string partitionKey, string rowKey);
+    Task<LookupNameValuePairEntity?> Get(string partitionKey, string rowKey);
     Task Insert(LookupNameValuePairEntity entity);
     Task Update(LookupNameValuePairEntity entity);
     Task CreateOrUpdate(LookupNameValuePairEntity entity);
@@ -33,13 +33,10 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         return _lookupNameValuePairTable.ExecuteQuery(query);
     }
 
-    public async Task<LookupNameValuePairEntity> Get(string partitionKey, string rowKey)
+    public async Task<LookupNameValuePairEntity?> Get(string partitionKey, string rowKey)
     {
         var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey);
-
         var result = await _lookupNameValuePairTable.ExecuteAsync(operation);
-
-        //ToDo: Can result be null?
         return result.Result as LookupNameValuePairEntity;
     }
 
