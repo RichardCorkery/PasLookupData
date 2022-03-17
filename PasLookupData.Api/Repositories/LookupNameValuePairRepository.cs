@@ -1,4 +1,6 @@
-﻿namespace PasLookupData.Api.Repositories;
+﻿using PasLookupData.Api.Repositories.Entities;
+
+namespace PasLookupData.Api.Repositories;
 
 public interface ILookupNameValuePairRepository
 {

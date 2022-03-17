@@ -1,9 +1,9 @@
-//ToDo: Review this whole file structure
-
 //ToDo: API Version?
 //ToDo: Review API PS Class Notes
 //ToDo: Review Work API: Returns???
 
+using PasLookupData.Api.Controllers.DataTransformObjects;
+using PasLookupData.Api.Repositories.Entities;
 namespace PasLookupData.Api.Controllers;
 
 [ApiController]
@@ -41,15 +41,15 @@ public class LookupNameValuePairsController : ControllerBase
             var entities = _lookupNameValuePairRepository.All();
             if (!entities.Any()) return NotFound("No LookupNameValuePairs found");
 
-            var models = entities.Select(x => new LookupNameValuePairModel
+            var lookupNameValuePairDtos = entities.Select(e => new LookupNameValuePairDto
             {
-                RowKey = x.RowKey,
-                PartitionKey = x.PartitionKey,
-                LookupKey = x.LookupKey,
-                Value = x.Value
+                RowKey = e.RowKey,
+                PartitionKey = e.PartitionKey,
+                LookupKey = e.LookupKey,
+                Value = e.Value
             });
 
-            return Ok(models.ToArray());
+            return Ok(lookupNameValuePairDtos.ToArray());
         }
         catch (Exception ex)
         {
@@ -84,7 +84,7 @@ public class LookupNameValuePairsController : ControllerBase
             //  - Log it?
             if (entity == null) return NotFound("No LookupNameValuePair found");
 
-            var model = new LookupNameValuePairModel
+            var lookupNameValuePairDto = new LookupNameValuePairDto
             {
                 RowKey = entity.RowKey,
                 PartitionKey = entity.PartitionKey,
@@ -92,7 +92,7 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = entity.Value
             };
 
-            return Ok(model);
+            return Ok(lookupNameValuePairDto);
         }
         catch (Exception ex)
         {
@@ -107,9 +107,9 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // POST api/lookupnamevaluepairs
-    //ToDo: Should the whole model returned, or just the Row Id?
+    //ToDo: Should the whole dto returned, or just the Row Id?
     [HttpPost]
-    public async Task<IActionResult> Post(LookupNameValuePairModel model)
+    public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -120,17 +120,17 @@ public class LookupNameValuePairsController : ControllerBase
             //ToDo: try and do a get first???  
             var entity = new LookupNameValuePairEntity
             {
-                PartitionKey = model.PartitionKey,
+                PartitionKey = lookupNameValuePairDto.PartitionKey,
                 RowKey = Guid.NewGuid().ToString(),
-                LookupKey = model.LookupKey,
-                Value = model.Value
+                LookupKey = lookupNameValuePairDto.LookupKey,
+                Value = lookupNameValuePairDto.Value
             };
 
             await _lookupNameValuePairRepository.Insert(entity);
 
-            model.RowKey = entity.RowKey;
+            lookupNameValuePairDto.RowKey = entity.RowKey;
 
-            return Created(new Uri($"{Request.Path}/partitionKey, rowKey?partitionKey={model.PartitionKey}&rowKey={model.RowKey}", UriKind.Relative), model);
+            return Created(new Uri($"{Request.Path}/partitionKey, rowKey?partitionKey={lookupNameValuePairDto.PartitionKey}&rowKey={lookupNameValuePairDto.RowKey}", UriKind.Relative), lookupNameValuePairDto);
         }
         catch (Exception ex)
         {
@@ -147,7 +147,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // PUT api/lookupnamevaluepairs
     [HttpPut]
-    public async Task<IActionResult> Put(LookupNameValuePairModel model)
+    public async Task<IActionResult> Put(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -155,14 +155,14 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-            var entity = await _lookupNameValuePairRepository.Get(model.PartitionKey, model.RowKey);
+            var entity = await _lookupNameValuePairRepository.Get(lookupNameValuePairDto.PartitionKey, lookupNameValuePairDto.RowKey);
 
             //ToDo: Include additoinal info (Parameters)?
             //  - Log it?
             if (entity == null) return NotFound("No LookupNameValuePair found"); ;
 
-            entity.LookupKey = model.LookupKey;
-            entity.Value = model.Value;
+            entity.LookupKey = lookupNameValuePairDto.LookupKey;
+            entity.Value = lookupNameValuePairDto.Value;
 
             await _lookupNameValuePairRepository.Update(entity);
 

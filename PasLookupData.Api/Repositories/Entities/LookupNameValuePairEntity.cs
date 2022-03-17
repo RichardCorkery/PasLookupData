@@ -1,4 +1,4 @@
-namespace PasLookupData.Api.Entities;
+namespace PasLookupData.Api.Repositories.Entities;
 
 public class LookupNameValuePairEntity : TableEntity
 {

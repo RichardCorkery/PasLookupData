@@ -1,6 +1,6 @@
-namespace PasLookupData.Api.Models;
+namespace PasLookupData.Api.Controllers.DataTransformObjects;
 
-public class LookupNameValuePairModel 
+public class LookupNameValuePairDto 
 {
     public string PartitionKey { get; set; }
 
