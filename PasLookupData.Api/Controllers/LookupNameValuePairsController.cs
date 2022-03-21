@@ -2,6 +2,7 @@
 //ToDo: Review API PS Class Notes
 //ToDo: Review Work API: Returns???
 
+using System.Net;
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
 namespace PasLookupData.Api.Controllers;
@@ -28,6 +29,7 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: What value should really be returned for each method?
     //ToDo: Any way to make this async?
     [HttpGet]
+    [ProducesResponseType(typeof(LookupNameValuePairDto[]), (int)HttpStatusCode.OK)]
     public IActionResult Get()
     {
         //ToDo 2: Use Decorator DP for logging?
@@ -66,6 +68,8 @@ public class LookupNameValuePairsController : ControllerBase
     // GET: api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     // ToDo: Change rowKey to guid?
     [HttpGet("{partitionKey}/{rowKey}")]
+    [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.OK)]
+    //ToDo: [ProducesErrorResponseType(typeof(NotFoundObjectResult))]
     public async Task<IActionResult> Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -109,6 +113,7 @@ public class LookupNameValuePairsController : ControllerBase
     // POST api/lookupnamevaluepairs
     //ToDo: Should the whole dto returned, or just the Row Id?
     [HttpPost]
+    [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -130,7 +135,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             lookupNameValuePairDto.RowKey = entity.RowKey;
 
-            return Created(new Uri($"{Request.Path}/partitionKey, rowKey?partitionKey={lookupNameValuePairDto.PartitionKey}&rowKey={lookupNameValuePairDto.RowKey}", UriKind.Relative), lookupNameValuePairDto);
+            return Created(new Uri($"{Request.Path}/{lookupNameValuePairDto.PartitionKey}/{lookupNameValuePairDto.RowKey}", UriKind.Relative), lookupNameValuePairDto);
         }
         catch (Exception ex)
         {
@@ -147,6 +152,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // PUT api/lookupnamevaluepairs
     [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<IActionResult> Put(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -183,6 +189,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     [HttpDelete("{partitionKey}/{rowKey}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<IActionResult> Delete(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";

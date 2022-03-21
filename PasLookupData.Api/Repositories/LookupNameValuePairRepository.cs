@@ -24,6 +24,7 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         _lookupNameValuePairTable = tableClient.GetTableReference("LookupNameValuePair");
     }
 
+    //ToDo: Return array?
     public IEnumerable<LookupNameValuePairEntity> All()
     {
         //ToDo: Review commented out code below
