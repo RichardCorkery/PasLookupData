@@ -63,9 +63,9 @@ public class LookupNameValuePairsController : ControllerBase
         }
     }
 
-    // GET: api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
-    // ToDo 2: Review what the template values below buys me
-    [HttpGet("partitionKey, rowKey")]
+    // GET: api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
+    // ToDo: Change rowKey to guid?
+    [HttpGet("{partitionKey}/{rowKey}")]
     public async Task<IActionResult> Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -181,8 +181,8 @@ public class LookupNameValuePairsController : ControllerBase
         }
     }
 
-    // DELETE api/LookupNameValuePairs/partitionKey, rowKey?partitionKey=partitionKeyValue&rowKey=rowKeyValue
-    [HttpDelete("partitionKey, rowKey")]
+    // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
+    [HttpDelete("{partitionKey}/{rowKey}")]
     public async Task<IActionResult> Delete(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
