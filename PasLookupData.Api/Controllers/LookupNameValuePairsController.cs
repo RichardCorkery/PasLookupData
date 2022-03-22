@@ -115,7 +115,7 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // POST api/lookupnamevaluepairs
-    //ToDo: Should the whole dto returned, or just the Row Id?
+    //ToDo: Should the whole dto returned, or just the Row Id? What does work do?
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.Created)]
