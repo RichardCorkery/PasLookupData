@@ -29,7 +29,7 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: What value should really be returned for each method?
     //ToDo: Any way to make this async?
     [HttpGet]
-    //ToDo: [Produces("application/json")]
+    [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto[]), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public IActionResult Get()
@@ -71,6 +71,7 @@ public class LookupNameValuePairsController : ControllerBase
     // GET: api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     // ToDo: Change rowKey to guid?
     [HttpGet("{partitionKey}/{rowKey}")]
+    [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -82,7 +83,6 @@ public class LookupNameValuePairsController : ControllerBase
         {
             //ToDo: Log the parameters?
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
-            
             
             //ToDo: Review some of my other apis
 
@@ -117,6 +117,7 @@ public class LookupNameValuePairsController : ControllerBase
     // POST api/lookupnamevaluepairs
     //ToDo: Should the whole dto returned, or just the Row Id?
     [HttpPost]
+    [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
