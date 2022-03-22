@@ -29,7 +29,9 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: What value should really be returned for each method?
     //ToDo: Any way to make this async?
     [HttpGet]
+    //ToDo: [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto[]), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public IActionResult Get()
     {
         //ToDo 2: Use Decorator DP for logging?
@@ -57,6 +59,7 @@ public class LookupNameValuePairsController : ControllerBase
         {
             var message = "An error occurred while getting the LookupNameValuePairs";
             _logger.LogError(ex,  $"{logHeader} {message} ");
+            //ToDo: see return NotFound() above, is there an return InternalServerError?
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
         finally
@@ -69,7 +72,8 @@ public class LookupNameValuePairsController : ControllerBase
     // ToDo: Change rowKey to guid?
     [HttpGet("{partitionKey}/{rowKey}")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.OK)]
-    //ToDo: [ProducesErrorResponseType(typeof(NotFoundObjectResult))]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -114,6 +118,7 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: Should the whole dto returned, or just the Row Id?
     [HttpPost]
     [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -153,6 +158,8 @@ public class LookupNameValuePairsController : ControllerBase
     // PUT api/lookupnamevaluepairs
     [HttpPut]
     [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> Put(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -190,6 +197,8 @@ public class LookupNameValuePairsController : ControllerBase
     // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     [HttpDelete("{partitionKey}/{rowKey}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> Delete(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
