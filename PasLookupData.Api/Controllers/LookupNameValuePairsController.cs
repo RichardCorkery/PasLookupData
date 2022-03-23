@@ -30,8 +30,8 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: Any way to make this async?
     [HttpGet]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(LookupNameValuePairDto[]), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(typeof(LookupNameValuePairDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Get()
     {
         //ToDo 2: Use Decorator DP for logging?
@@ -59,8 +59,8 @@ public class LookupNameValuePairsController : ControllerBase
         {
             var message = "An error occurred while getting the LookupNameValuePairs";
             _logger.LogError(ex,  $"{logHeader} {message} ");
-            //ToDo: see return NotFound() above, is there an return InternalServerError?
             return StatusCode(StatusCodes.Status500InternalServerError, message);
+            
         }
         finally
         {
@@ -72,9 +72,9 @@ public class LookupNameValuePairsController : ControllerBase
     // ToDo: Change rowKey to guid?
     [HttpGet("{partitionKey}/{rowKey}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -115,11 +115,10 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // POST api/lookupnamevaluepairs
-    //ToDo: Should the whole dto returned, or just the Row Id? What does work do?
     [HttpPost]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(LookupNameValuePairDto), (int)HttpStatusCode.Created)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -158,9 +157,9 @@ public class LookupNameValuePairsController : ControllerBase
 
     // PUT api/lookupnamevaluepairs
     [HttpPut]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Put(LookupNameValuePairDto lookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
@@ -197,9 +196,9 @@ public class LookupNameValuePairsController : ControllerBase
 
     // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     [HttpDelete("{partitionKey}/{rowKey}")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(string partitionKey, string rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
