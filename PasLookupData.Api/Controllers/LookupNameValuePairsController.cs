@@ -1,6 +1,4 @@
-//ToDo: API Version?
-//  - See PS Class 1: Designing Versioning
-//  - See PS Class 2: Versioning Your API
+//ToDo: API Doc / Comments: Add
 //ToDo: Add X-Total-Count
 //ToDo: Add bad request?
 //  - See PS Class 1: Error Handling Demo
@@ -11,6 +9,7 @@ using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
 namespace PasLookupData.Api.Controllers;
 
+[ApiVersion("1.0")]
 [ApiController]
 [Route("api/[controller]")]
 public class LookupNameValuePairsController : ControllerBase

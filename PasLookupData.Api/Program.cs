@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Versioning;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,13 +14,40 @@ var configuration = builder.Configuration;
 //ToDo: Singleton? Probably
 builder.Services.AddTransient<ILookupNameValuePairRepository>(sp => new LookupNameValuePairRepository(configuration[Constants.AppSettingsKey.PasStorageConnectionString]));
 
+//See - for basics: https://dotnetcoretutorials.com/2017/01/17/api-versioning-asp-net-core/
+//See - to implement ApiVersionReader.Combine: https://github.com/dotnet/aspnet-api-versioning/wiki/API-Version-Reader
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new QueryStringApiVersionReader("version"),
+        new HeaderApiVersionReader("x-api-version"));
+});
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1.0", //Note: This version value must match the json file version number below. ie: "/swagger/v1.0/swagger.json"
+        new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "PasLookupData.Api",
+            Description = "API for PAS Lookup Data",
+            Version = "v1.0",
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1.0/swagger.json", "PasLookupData.Api v1.0");
+        }
+    );
 }
 
 app.UseHttpsRedirection();
