@@ -1,7 +1,12 @@
 //ToDo: API Version?
-//ToDo: Review API PS Class Notes
+//  - See PS Class 1: Designing Versioning
+//  - See PS Class 2: Versioning Your API
+//ToDo: Add X-Total-Count
+//ToDo: Add bad request?
+//  - See PS Class 1: Error Handling Demo
+//  - See PS Class 2: Add Model Validation Basic?
+//  - See PS Class 2: POST a new Talk
 
-using System.Net;
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
 namespace PasLookupData.Api.Controllers;
@@ -25,7 +30,6 @@ public class LookupNameValuePairsController : ControllerBase
     //  - Or maybe just set up okta?  
 
     // GET: api/lookupnamevaluepairs
-    //ToDo: What value should really be returned for each method?
     //ToDo: Any way to make this async?
     [HttpGet]
     [Produces("application/json")]
