@@ -1,4 +1,5 @@
-//ToDo: API Doc / Comments: Add
+//ToDo: XML Comments: Add
+//ToDo: What can we use to show the XML Comments
 //ToDo: Add bad request?
 //  - See PS Class 1: Error Handling Demo
 //  - See PS Class 2: Add Model Validation Basic?
@@ -6,7 +7,12 @@
 
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
+
 namespace PasLookupData.Api.Controllers;
+
+/// <summary>
+/// PAS Lookup Data Operations
+/// </summary>
 
 [ApiVersion("1.0")]
 [ApiController]
@@ -17,6 +23,12 @@ public class LookupNameValuePairsController : ControllerBase
     private readonly ILookupNameValuePairRepository _lookupNameValuePairRepository;
 
     //ToDo: Unit Tests 
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LookupNameValuePairsController"/> class.
+    /// </summary>
+    /// <param name="logger">The logger</param> 
+    /// <param name="lookupNameValuePairRepository">The Lookup Name Value Pair Repository</param>
     public LookupNameValuePairsController(ILogger<LookupNameValuePairsController> logger, ILookupNameValuePairRepository lookupNameValuePairRepository)
     {
         _logger = logger;
@@ -27,8 +39,12 @@ public class LookupNameValuePairsController : ControllerBase
     //ToDo: Set up so only my Client can access the API: https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis
     //  - Or maybe just set up okta?  
 
-    // GET: api/lookupnamevaluepairs
     //ToDo: Any way to make this async?
+    // GET: api/lookupnamevaluepairs
+    /// <summary>
+    /// Get all of the Lookup Name Value Pairs
+    /// </summary>
+    /// <returns>The a list of LookupNameValuePairs</returns>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto[]), StatusCodes.Status200OK)]
@@ -72,6 +88,13 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // GET: api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
+    /// <summary>
+    /// Get a NameValuePair by partitionKey and rowKey
+    /// </summary>
+    /// <param name="partitionKey">The LookupNameValuePair Partition Key</param>
+    /// <param name="rowKey">The LookupNameValuePair Row Key</param>
+    /// <returns>The selected LookupNameValuePair </returns>
+
     // ToDo: Change rowKey to guid?
     [HttpGet("{partitionKey}/{rowKey}")]
     [Produces("application/json")]
