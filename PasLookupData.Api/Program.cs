@@ -23,7 +23,7 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     options.ApiVersionReader = ApiVersionReader.Combine(
         new QueryStringApiVersionReader("version"),
-        new HeaderApiVersionReader("x-api-version"));
+        new HeaderApiVersionReader("api-version"));
 });
 
 builder.Services.AddSwaggerGen(options =>

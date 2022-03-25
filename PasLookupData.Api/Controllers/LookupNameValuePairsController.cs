@@ -1,5 +1,4 @@
 //ToDo: API Doc / Comments: Add
-//ToDo: Add X-Total-Count
 //ToDo: Add bad request?
 //  - See PS Class 1: Error Handling Demo
 //  - See PS Class 2: Add Model Validation Basic?
@@ -54,6 +53,8 @@ public class LookupNameValuePairsController : ControllerBase
                 LookupKey = e.LookupKey,
                 Value = e.Value
             });
+
+            Response.Headers.Add("total-count", lookupNameValuePairDtos.Count().ToString());
 
             return Ok(lookupNameValuePairDtos.ToArray());
         }
