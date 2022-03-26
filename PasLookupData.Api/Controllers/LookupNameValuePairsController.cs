@@ -1,4 +1,4 @@
-//ToDo: XML Comments: Add
+//ToDo: XML Comments: Add / Better 
 //ToDo: What can we use to show the XML Comments
 //ToDo: Add bad request?
 //  - See PS Class 1: Error Handling Demo
@@ -58,7 +58,7 @@ public class LookupNameValuePairsController : ControllerBase
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
-            //ToDo: Push this processing down on an Orchestrator / Service?
+            //ToDo 2: Push this processing down on an Orchestrator / Service?
             var entities = _lookupNameValuePairRepository.All();
             if (!entities.Any()) return NotFound("No LookupNameValuePairs found");
 
@@ -89,7 +89,7 @@ public class LookupNameValuePairsController : ControllerBase
 
     // GET: api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     /// <summary>
-    /// Get a NameValuePair by partitionKey and rowKey
+    /// Get a LookupNameValuePair by partitionKey and rowKey
     /// </summary>
     /// <param name="partitionKey">The LookupNameValuePair Partition Key</param>
     /// <param name="rowKey">The LookupNameValuePair Row Key</param>
@@ -110,8 +110,6 @@ public class LookupNameValuePairsController : ControllerBase
             //ToDo: Log the parameters?
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
             
-            //ToDo: Review some of my other apis
-
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
             //ToDo: Include additoinal info (Parameters)?
@@ -141,6 +139,13 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // POST api/lookupnamevaluepairs
+
+    /// <summary>
+    /// Create a LookupNameValuePair 
+    /// </summary>
+    /// <param name="lookupNameValuePairDto">The LookupNameValuePair to add</param>
+    /// <returns>The newly created LookupNameValuePair record</returns>
+    //ToDo See above: a better word than record, use XTB
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status201Created)]
@@ -182,6 +187,13 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // PUT api/lookupnamevaluepairs
+
+    /// <summary>
+    /// Update a LookupNameValuePair
+    /// </summary>
+    /// <param name="lookupNameValuePairDto">The LookupNameValuePair record to be updated</param>
+    /// <returns>StatusCodes.Status200OK</returns>
+    /// //ToDo See above: a better word than record, use XTB
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -221,6 +233,15 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
+    /// <summary>
+    /// Delete a LookupNameValuePair record
+    /// </summary>
+    /// <param name="partitionKey">The LookupNameValuePair Partition Key to be deleted</param>
+    /// <param name="rowKey">The LookupNameValuePair Row Key to be deleted</param>
+    /// <returns>StatusCodes.Status200OK</returns>
+
+    //ToDo XML Comment: See above: a better word than record, use XTB
+    //ToDo XML Comment: Is the return value correct?  Should it be something else? 
     [HttpDelete("{partitionKey}/{rowKey}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
