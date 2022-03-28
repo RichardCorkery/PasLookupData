@@ -1,9 +1,16 @@
+//ToDo: Post: rowKey
+//      - Created or send down?
+//      - If send down, should not be in the dto
+
 //ToDo: XML Comments: Add / Better 
 //ToDo: What can we use to show the XML Comments
+
 //ToDo: Add bad request?
 //  - See PS Class 1: Error Handling Demo
 //  - See PS Class 2: Add Model Validation Basic?
 //  - See PS Class 2: POST a new Talk
+
+//ToDo: Add test for duplicate
 
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
@@ -64,7 +71,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             var lookupNameValuePairDtos = entities.Select(e => new LookupNameValuePairDto
             {
-                RowKey = e.RowKey,
+                RowKey =  Guid.Parse(e.RowKey),
                 PartitionKey = e.PartitionKey,
                 LookupKey = e.LookupKey,
                 Value = e.Value
@@ -94,14 +101,13 @@ public class LookupNameValuePairsController : ControllerBase
     /// <param name="partitionKey">The LookupNameValuePair Partition Key</param>
     /// <param name="rowKey">The LookupNameValuePair Row Key</param>
     /// <returns>The selected LookupNameValuePair </returns>
-
-    // ToDo: Change rowKey to guid?
+    
     [HttpGet("{partitionKey}/{rowKey}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Get(string partitionKey, string rowKey)
+    public async Task<IActionResult> Get(string partitionKey, Guid rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -118,7 +124,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             var lookupNameValuePairDto = new LookupNameValuePairDto
             {
-                RowKey = entity.RowKey,
+                RowKey = Guid.Parse(entity.RowKey),
                 PartitionKey = entity.PartitionKey,
                 LookupKey = entity.LookupKey,
                 Value = entity.Value
@@ -169,7 +175,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             await _lookupNameValuePairRepository.Insert(entity);
 
-            lookupNameValuePairDto.RowKey = entity.RowKey;
+            lookupNameValuePairDto.RowKey = Guid.Parse(entity.RowKey);
 
             return Created(new Uri($"{Request.Path}/{lookupNameValuePairDto.PartitionKey}/{lookupNameValuePairDto.RowKey}", UriKind.Relative), lookupNameValuePairDto);
         }
@@ -246,7 +252,7 @@ public class LookupNameValuePairsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Delete(string partitionKey, string rowKey)
+    public async Task<IActionResult> Delete(string partitionKey, Guid rowKey)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 

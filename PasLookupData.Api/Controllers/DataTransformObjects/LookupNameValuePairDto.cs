@@ -4,7 +4,7 @@ public class LookupNameValuePairDto
 {
     public string PartitionKey { get; set; }
 
-    public string RowKey { get; set; }
+    public Guid RowKey { get; set; }
 
     public string LookupKey { get; set; }
 

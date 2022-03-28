@@ -5,7 +5,7 @@ namespace PasLookupData.Api.Repositories;
 public interface ILookupNameValuePairRepository
 {
     IEnumerable<LookupNameValuePairEntity> All();
-    Task<LookupNameValuePairEntity?> Get(string partitionKey, string rowKey);
+    Task<LookupNameValuePairEntity?> Get(string partitionKey, Guid rowKey);
     Task Insert(LookupNameValuePairEntity entity);
     Task Update(LookupNameValuePairEntity entity);
     Task CreateOrUpdate(LookupNameValuePairEntity entity);
@@ -36,9 +36,9 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         return _lookupNameValuePairTable.ExecuteQuery(query);
     }
 
-    public async Task<LookupNameValuePairEntity?> Get(string partitionKey, string rowKey)
+    public async Task<LookupNameValuePairEntity?> Get(string partitionKey, Guid rowKey)
     {
-        var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey);
+        var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey.ToString());
         var result = await _lookupNameValuePairTable.ExecuteAsync(operation);
         return result.Result as LookupNameValuePairEntity;
     }
