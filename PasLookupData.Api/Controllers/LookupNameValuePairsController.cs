@@ -1,7 +1,3 @@
-//ToDo: Post: rowKey
-//      - Created or send down?
-//      - If send down, should not be in the dto
-
 //ToDo: XML Comments: Add / Better 
 //ToDo: What can we use to show the XML Comments
 
@@ -149,14 +145,14 @@ public class LookupNameValuePairsController : ControllerBase
     /// <summary>
     /// Create a LookupNameValuePair 
     /// </summary>
-    /// <param name="lookupNameValuePairDto">The LookupNameValuePair to add</param>
+    /// <param name="newLookupNameValuePairDto">The LookupNameValuePair to add</param>
     /// <returns>The newly created LookupNameValuePair record</returns>
     //ToDo See above: a better word than record, use XTB
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post(LookupNameValuePairDto lookupNameValuePairDto)
+    public async Task<IActionResult> Post(NewLookupNameValuePairDto newLookupNameValuePairDto)
     {
         var logHeader = $"[{GetType().Name}: {Guid.NewGuid()}]";
 
@@ -167,15 +163,21 @@ public class LookupNameValuePairsController : ControllerBase
             //ToDo: try and do a get first???  
             var entity = new LookupNameValuePairEntity
             {
-                PartitionKey = lookupNameValuePairDto.PartitionKey,
+                PartitionKey = newLookupNameValuePairDto.PartitionKey,
                 RowKey = Guid.NewGuid().ToString(),
-                LookupKey = lookupNameValuePairDto.LookupKey,
-                Value = lookupNameValuePairDto.Value
+                LookupKey = newLookupNameValuePairDto.LookupKey,
+                Value = newLookupNameValuePairDto.Value
             };
 
             await _lookupNameValuePairRepository.Insert(entity);
 
-            lookupNameValuePairDto.RowKey = Guid.Parse(entity.RowKey);
+            var lookupNameValuePairDto = new LookupNameValuePairDto
+            {
+                PartitionKey = newLookupNameValuePairDto.PartitionKey,
+                RowKey = Guid.Parse(entity.RowKey),
+                LookupKey = newLookupNameValuePairDto.LookupKey,
+                Value = newLookupNameValuePairDto.Value
+            };
 
             return Created(new Uri($"{Request.Path}/{lookupNameValuePairDto.PartitionKey}/{lookupNameValuePairDto.RowKey}", UriKind.Relative), lookupNameValuePairDto);
         }
