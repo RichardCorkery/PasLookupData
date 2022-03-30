@@ -2,11 +2,10 @@
 //ToDo: What can we use to show the XML Comments
 
 //ToDo: Add bad request?
+//  - Flag this as a talking point for the API discussion
 //  - See PS Class 1: Error Handling Demo
 //  - See PS Class 2: Add Model Validation Basic?
 //  - See PS Class 2: POST a new Talk
-
-//ToDo: Add test for duplicate
 
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
@@ -151,6 +150,7 @@ public class LookupNameValuePairsController : ControllerBase
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post(NewLookupNameValuePairDto newLookupNameValuePairDto)
     {
@@ -159,9 +159,15 @@ public class LookupNameValuePairsController : ControllerBase
         try
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
-
-            //ToDo: try and do a get first???  
-            var entity = new LookupNameValuePairEntity
+            
+            var existingEntity = await _lookupNameValuePairRepository.GetByLookupKey(newLookupNameValuePairDto.PartitionKey, newLookupNameValuePairDto.LookupKey);
+            if (existingEntity is not null)
+            {
+                //ToDo: update with parms to specify the Lookup Key
+                return Conflict("The LookupNameValuePair entity already exists for the LookupKey");
+            }
+            
+            var newEntity = new LookupNameValuePairEntity
             {
                 PartitionKey = newLookupNameValuePairDto.PartitionKey,
                 RowKey = Guid.NewGuid().ToString(),
@@ -169,12 +175,12 @@ public class LookupNameValuePairsController : ControllerBase
                 Value = newLookupNameValuePairDto.Value
             };
 
-            await _lookupNameValuePairRepository.Insert(entity);
+            await _lookupNameValuePairRepository.Insert(newEntity);
 
             var lookupNameValuePairDto = new LookupNameValuePairDto
             {
                 PartitionKey = newLookupNameValuePairDto.PartitionKey,
-                RowKey = Guid.Parse(entity.RowKey),
+                RowKey = Guid.Parse(newEntity.RowKey),
                 LookupKey = newLookupNameValuePairDto.LookupKey,
                 Value = newLookupNameValuePairDto.Value
             };

@@ -6,6 +6,7 @@ public interface ILookupNameValuePairRepository
 {
     IEnumerable<LookupNameValuePairEntity> All();
     Task<LookupNameValuePairEntity?> Get(string partitionKey, Guid rowKey);
+    Task<LookupNameValuePairEntity?> GetByLookupKey(string partitionKey, string lookupKey);
     Task Insert(LookupNameValuePairEntity entity);
     Task Update(LookupNameValuePairEntity entity);
     Task CreateOrUpdate(LookupNameValuePairEntity entity);
@@ -36,11 +37,26 @@ public class LookupNameValuePairRepository : ILookupNameValuePairRepository
         return _lookupNameValuePairTable.ExecuteQuery(query);
     }
 
+    //ToDo: Is Get a good name?
     public async Task<LookupNameValuePairEntity?> Get(string partitionKey, Guid rowKey)
     {
         var operation = TableOperation.Retrieve<LookupNameValuePairEntity>(partitionKey, rowKey.ToString());
         var result = await _lookupNameValuePairTable.ExecuteAsync(operation);
         return result.Result as LookupNameValuePairEntity;
+    }
+    
+    public async Task<LookupNameValuePairEntity?> GetByLookupKey(string partitionKey, string lookupKey)
+    {
+        var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
+
+        var lookUpKeyFilter = TableQuery.GenerateFilterCondition("LookupKey", QueryComparisons.Equal, lookupKey);
+
+        var query = new TableQuery<LookupNameValuePairEntity>().Where(TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And, lookUpKeyFilter));
+
+        var result = await _lookupNameValuePairTable.ExecuteQuerySegmentedAsync<LookupNameValuePairEntity>(query, null);
+
+        //ToDo: FirstOrDefault vs SingleOrDefault
+        return result.FirstOrDefault();
     }
 
     public async Task Insert(LookupNameValuePairEntity entity)
