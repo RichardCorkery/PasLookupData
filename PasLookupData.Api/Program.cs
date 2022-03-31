@@ -11,7 +11,6 @@ builder.Services.AddSwaggerGen();
 
 var configuration = builder.Configuration;
 
-//ToDo: Singleton? Probably
 builder.Services.AddTransient<ILookupNameValuePairRepository>(sp => new LookupNameValuePairRepository(configuration[Constants.AppSettingsKey.PasStorageConnectionString]));
 
 //See - for basics: https://dotnetcoretutorials.com/2017/01/17/api-versioning-asp-net-core/
