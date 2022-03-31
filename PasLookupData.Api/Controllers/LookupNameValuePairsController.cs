@@ -144,8 +144,7 @@ public class LookupNameValuePairsController : ControllerBase
     /// Create a LookupNameValuePair 
     /// </summary>
     /// <param name="newLookupNameValuePairDto">The LookupNameValuePair to add</param>
-    /// <returns>The newly created LookupNameValuePair record</returns>
-    //ToDo See above: a better word than record, use XTB
+    /// <returns>The newly created LookupNameValuePair </returns>
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(LookupNameValuePairDto), StatusCodes.Status201Created)]
@@ -203,9 +202,8 @@ public class LookupNameValuePairsController : ControllerBase
     /// <summary>
     /// Update a LookupNameValuePair
     /// </summary>
-    /// <param name="lookupNameValuePairDto">The LookupNameValuePair record to be updated</param>
+    /// <param name="lookupNameValuePairDto">The LookupNameValuePair to be updated</param>
     /// <returns>StatusCodes.Status200OK</returns>
-    /// //ToDo See above: a better word than record, use XTB
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -244,13 +242,12 @@ public class LookupNameValuePairsController : ControllerBase
 
     // DELETE api/LookupNameValuePairs/partitionKeyValue/rowKeyValue
     /// <summary>
-    /// Delete a LookupNameValuePair record
+    /// Delete a LookupNameValuePair 
     /// </summary>
     /// <param name="partitionKey">The LookupNameValuePair Partition Key to be deleted</param>
     /// <param name="rowKey">The LookupNameValuePair Row Key to be deleted</param>
     /// <returns>StatusCodes.Status200OK</returns>
-
-    //ToDo XML Comment: See above: a better word than record, use XTB
+    
     //ToDo XML Comment: Is the return value correct?  Should it be something else? 
     [HttpDelete("{partitionKey}/{rowKey}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
