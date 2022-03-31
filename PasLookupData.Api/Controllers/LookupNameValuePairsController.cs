@@ -113,9 +113,7 @@ public class LookupNameValuePairsController : ControllerBase
             
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
-            //ToDo: Include additoinal info (Parameters)?
-            //  - Log it?
-            if (entity == null) return NotFound("No LookupNameValuePair found");
+            if (entity == null) return NotFound($"No LookupNameValuePair found for Partition Key: {partitionKey} and Row Key: {rowKey} ");
 
             var lookupNameValuePairDto = new LookupNameValuePairDto
             {
@@ -129,7 +127,7 @@ public class LookupNameValuePairsController : ControllerBase
         }
         catch (Exception ex)
         {
-            var message = "An error occurred while getting the LookupNameValuePair";
+            var message = $"An error occurred while getting the LookupNameValuePair for Partition Key: {partitionKey} and Row Key: {rowKey}";
             _logger.LogError(ex, $"{logHeader} {message}");
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
@@ -163,8 +161,7 @@ public class LookupNameValuePairsController : ControllerBase
             var existingEntity = await _lookupNameValuePairRepository.GetByLookupKey(newLookupNameValuePairDto.PartitionKey, newLookupNameValuePairDto.LookupKey);
             if (existingEntity is not null)
             {
-                //ToDo: update with parms to specify the Lookup Key
-                return Conflict("The LookupNameValuePair entity already exists for the LookupKey");
+                return Conflict($"The LookupNameValuePair entity already exists for for Partition Key: {newLookupNameValuePairDto.PartitionKey} and Row Key: {newLookupNameValuePairDto.LookupKey}");
             }
             
             var newEntity = new LookupNameValuePairEntity
@@ -221,10 +218,8 @@ public class LookupNameValuePairsController : ControllerBase
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
 
             var entity = await _lookupNameValuePairRepository.Get(lookupNameValuePairDto.PartitionKey, lookupNameValuePairDto.RowKey);
-
-            //ToDo: Include additoinal info (Parameters)?
-            //  - Log it?
-            if (entity == null) return NotFound("No LookupNameValuePair found"); ;
+            
+            if (entity == null) return NotFound($"No LookupNameValuePair found for Partition Key: {lookupNameValuePairDto.PartitionKey} and Row Key: {lookupNameValuePairDto.RowKey} ");
 
             entity.LookupKey = lookupNameValuePairDto.LookupKey;
             entity.Value = lookupNameValuePairDto.Value;
@@ -235,8 +230,7 @@ public class LookupNameValuePairsController : ControllerBase
         }
         catch (Exception ex)
         {
-            //ToDo: Add info about which entity had the issue?
-            var message = "An error occurred while updating the LookupNameValuePair";
+            var message = $"An error occurred while updating the LookupNameValuePair for Partition Key: {lookupNameValuePairDto.PartitionKey} and Row Key: {lookupNameValuePairDto.RowKey}";
             _logger.LogError(ex, $"{logHeader} {message}");
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
@@ -270,9 +264,7 @@ public class LookupNameValuePairsController : ControllerBase
 
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
-            //ToDo: Include additoinal info (Parameters)?
-            //  - Log it?
-            if (entity == null) return NotFound("No LookupNameValuePair found"); 
+            if (entity == null) return NotFound($"No LookupNameValuePair found for Partition Key: {partitionKey} and Row Key: {rowKey} ");
 
             await _lookupNameValuePairRepository.Delete(entity);
 
@@ -280,8 +272,7 @@ public class LookupNameValuePairsController : ControllerBase
         }
         catch (Exception ex)
         {
-            //ToDo: Add info about which entity had the issue?
-            var message = "An error occurred while deleting  the LookupNameValuePair";
+            var message = $"An error occurred while deleting the LookupNameValuePair for Partition Key: {partitionKey} and Row Key: {rowKey}";
             _logger.LogError(ex, $"{logHeader} {message}");
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
