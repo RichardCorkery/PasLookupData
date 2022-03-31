@@ -7,6 +7,7 @@
 //  - See PS Class 2: Add Model Validation Basic?
 //  - See PS Class 2: POST a new Talk
 
+using Newtonsoft.Json;
 using PasLookupData.Api.Controllers.DataTransformObjects;
 using PasLookupData.Api.Repositories.Entities;
 
@@ -108,9 +109,9 @@ public class LookupNameValuePairsController : ControllerBase
 
         try
         {
-            //ToDo: Log the parameters?
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
-            
+            _logger.LogInformation($"{logHeader} Argument(s)- partitionKey: {partitionKey}, rowKey: {rowKey}");
+
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
             if (entity == null) return NotFound($"No LookupNameValuePair found for Partition Key: {partitionKey} and Row Key: {rowKey} ");
@@ -157,7 +158,8 @@ public class LookupNameValuePairsController : ControllerBase
         try
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
-            
+            _logger.LogInformation($"{logHeader} Argument(s)- newLookupNameValuePairDto: {JsonConvert.SerializeObject(newLookupNameValuePairDto)}");
+
             var existingEntity = await _lookupNameValuePairRepository.GetByLookupKey(newLookupNameValuePairDto.PartitionKey, newLookupNameValuePairDto.LookupKey);
             if (existingEntity is not null)
             {
@@ -186,8 +188,7 @@ public class LookupNameValuePairsController : ControllerBase
         }
         catch (Exception ex)
         {
-            //ToDo: Add info about which entity had the issue?
-            var message = "An error occurred while creating the LookupNameValuePair";
+            var message = "An error occurred while creating the new LookupNameValuePair for newLookupNameValuePairDto: {JsonConvert.SerializeObject(newLookupNameValuePairDto)}";
             _logger.LogError(ex, $"{logHeader} {message}");
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
@@ -216,6 +217,7 @@ public class LookupNameValuePairsController : ControllerBase
         try
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
+            _logger.LogInformation($"{logHeader} Argument(s)- lookupNameValuePairDto: {JsonConvert.SerializeObject(lookupNameValuePairDto)}");
 
             var entity = await _lookupNameValuePairRepository.Get(lookupNameValuePairDto.PartitionKey, lookupNameValuePairDto.RowKey);
             
@@ -230,7 +232,7 @@ public class LookupNameValuePairsController : ControllerBase
         }
         catch (Exception ex)
         {
-            var message = $"An error occurred while updating the LookupNameValuePair for Partition Key: {lookupNameValuePairDto.PartitionKey} and Row Key: {lookupNameValuePairDto.RowKey}";
+            var message = $"An error occurred while updating the LookupNameValuePair for lookupNameValuePairDto: {JsonConvert.SerializeObject(lookupNameValuePairDto)}";
             _logger.LogError(ex, $"{logHeader} {message}");
             return StatusCode(StatusCodes.Status500InternalServerError, message);
         }
@@ -261,6 +263,7 @@ public class LookupNameValuePairsController : ControllerBase
         try
         {
             _logger.LogInformation($"{logHeader} {Constants.Tracing.Started}");
+            _logger.LogInformation($"{logHeader} Argument(s)- partitionKey: {partitionKey}, rowKey: {rowKey}");
 
             var entity = await _lookupNameValuePairRepository.Get(partitionKey, rowKey);
 
