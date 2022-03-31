@@ -163,7 +163,7 @@ public class LookupNameValuePairsController : ControllerBase
             var existingEntity = await _lookupNameValuePairRepository.GetByLookupKey(newLookupNameValuePairDto.PartitionKey, newLookupNameValuePairDto.LookupKey);
             if (existingEntity is not null)
             {
-                return Conflict($"The LookupNameValuePair entity already exists for for Partition Key: {newLookupNameValuePairDto.PartitionKey} and Row Key: {newLookupNameValuePairDto.LookupKey}");
+                return Conflict($"The LookupNameValuePair entity already exists for Partition Key: {newLookupNameValuePairDto.PartitionKey} and Row Key: {newLookupNameValuePairDto.LookupKey}");
             }
             
             var newEntity = new LookupNameValuePairEntity
