@@ -1,5 +1,11 @@
+//ToDo 2: Secure API from Unauthorized access using Azure API Management API Key and / or Certificate
+
+//ToDo 2: Use a DocFx site to show Header Comments
+//  https://docs.microsoft.com/en-us/shows/on-net/intro-to-docfx?msclkid=143bae25bcf811eca4728a58a0c8ed86
+
+
+
 //ToDo: XML Comments: Add / Better 
-//ToDo: What can we use to show the XML Comments
 
 //ToDo: Add bad request?
 //  - Flag this as a talking point for the API discussion
