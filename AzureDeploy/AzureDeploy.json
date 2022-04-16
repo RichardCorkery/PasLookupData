@@ -164,7 +164,7 @@
                 "Environment": "[parameters('environment')]",     
                 "UseMockServices": false, 
                 "CorsWithOriginsUrl": "[parameters('corsWithOriginsUrl')]",              
-                "Data:AzureStorageDemos:ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(parameters('storageAccountResourceGroupName'),'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
+                "Data:PasStorage:ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId(parameters('storageAccountResourceGroupName'),'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2019-06-01').keys[0].value)]"
             }
         },
         {
