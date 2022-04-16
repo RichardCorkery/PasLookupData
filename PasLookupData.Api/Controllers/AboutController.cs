@@ -7,6 +7,12 @@ namespace PasLookupData.Api.Controllers
     [ApiController]
     public class AboutController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+        public AboutController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // GET: api/about>
         [HttpGet]
         public ContentResult Get()
@@ -15,12 +21,15 @@ namespace PasLookupData.Api.Controllers
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             
             var buildVersion = $"{ version.Major:0000}.{ version.Minor:00}.{ version.Build:00}.{ version.Revision:00}";
-
-            //ToDo: Only include swagger link if not Production
+            
             var message = $@"App Name: {appName}<br/><br/>
                              Build: {buildVersion}<br/><br/>
-                             Owner: PasLookupData.Api Developers<br/><br/>
-                            <a href=""/swagger"">Swagger API Documentation</a>";
+                             Owner: PasLookupData.Api Developers<br/><br/>";
+
+            if (_configuration[Constants.AppSettingsKey.Environment] != Constants.Environment.Production)
+            {
+                message += @"<a href=""/swagger"">Swagger API Documentation</a>";
+            }
 
             var contentResult = new ContentResult()
             {

@@ -39,8 +39,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-// ToDo: How is IsProduction set? Or should I just use my one Deployment Variable?  
-if (!app.Environment.IsProduction())
+if (configuration[Constants.AppSettingsKey.Environment] != Constants.Environment.Production)
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
