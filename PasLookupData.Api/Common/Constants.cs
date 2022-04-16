@@ -16,9 +16,10 @@ public class Constants
 
     public class Environment
     {
-        public const string Development = "development";
+        public const string Development = "dev";
         public const string SysTest = "systest";
+        public const string Qa = "qa";
         public const string Uat = "uat";
-        public const string Production = "production";
+        public const string Production = "prod";
     }
 }
