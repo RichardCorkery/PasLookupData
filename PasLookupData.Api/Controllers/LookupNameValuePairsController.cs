@@ -3,8 +3,6 @@
 //ToDo 2: Use a DocFx site to show Header Comments
 //  https://docs.microsoft.com/en-us/shows/on-net/intro-to-docfx?msclkid=143bae25bcf811eca4728a58a0c8ed86
 
-
-
 //ToDo: XML Comments: Add / Better 
 
 //ToDo: Add bad request?
@@ -45,8 +43,6 @@ public class LookupNameValuePairsController : ControllerBase
     }
 
     //ToDo: Review Controller of the function app I did
-    //ToDo: Set up so only my Client can access the API: https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis
-    //  - Or maybe just set up okta?  
 
     //ToDo: Any way to make this async?
     // GET: api/lookupnamevaluepairs
